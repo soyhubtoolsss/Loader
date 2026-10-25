@@ -1,0 +1,254 @@
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+
+-- ================= LOADING SCREEN ==================
+local loadingGui = Instance.new("ScreenGui")
+loadingGui.Parent = player:WaitForChild("PlayerGui")
+
+local loadFrame = Instance.new("Frame")
+loadFrame.Size = UDim2.new(0,260,0,140)
+loadFrame.Position = UDim2.new(0.5,-130,0.5,-70)
+loadFrame.BackgroundColor3 = Color3.fromRGB(15,15,15)
+Instance.new("UICorner", loadFrame).CornerRadius = UDim.new(0,10)
+loadFrame.Parent = loadingGui
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1,0,0,30)
+titleLabel.Position = UDim2.new(0,0,0,10)
+titleLabel.Text = "MM2 FREEZE TRADE"
+titleLabel.TextColor3 = Color3.fromRGB(255,60,60)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 18
+titleLabel.BackgroundTransparency = 1
+titleLabel.Parent = loadFrame
+
+local progressBG = Instance.new("Frame")
+progressBG.Size = UDim2.new(0.85,0,0,12)
+progressBG.Position = UDim2.new(0.075,0,0,80)
+progressBG.BackgroundColor3 = Color3.fromRGB(30,30,30)
+progressBG.Parent = loadFrame
+Instance.new("UICorner", progressBG).CornerRadius = UDim.new(0,6)
+
+local progressFill = Instance.new("Frame")
+progressFill.Size = UDim2.new(0,0,1,0)
+progressFill.BackgroundColor3 = Color3.fromRGB(255,60,60)
+progressFill.Parent = progressBG
+Instance.new("UICorner", progressFill).CornerRadius = UDim.new(0,6)
+
+local percentLabel = Instance.new("TextLabel")
+percentLabel.Size = UDim2.new(1,0,0,20)
+percentLabel.Position = UDim2.new(0,0,0,100)
+percentLabel.Text = "0%"
+percentLabel.TextColor3 = Color3.fromRGB(255,255,255)
+percentLabel.Font = Enum.Font.Gotham
+percentLabel.TextSize = 14
+percentLabel.BackgroundTransparency = 1
+percentLabel.Parent = loadFrame
+
+for i = 1,100 do
+    progressFill.Size = UDim2.new(i/100,0,1,0)
+    percentLabel.Text = i.."%"
+    task.wait(0.05)
+end
+
+loadingGui:Destroy()
+
+-- ================= SCRIPT ICON (TOGGLE BUTTON) ==================
+local iconGui = Instance.new("ScreenGui")
+iconGui.Parent = player:WaitForChild("PlayerGui")
+iconGui.DisplayOrder = 999999
+
+local iconFrame = Instance.new("Frame")
+iconFrame.Size = UDim2.new(0,55,0,55) -- Bahagyang pinalaki para mas malinaw ang logo
+iconFrame.Position = UDim2.new(0.5,-27,0,10)
+iconFrame.BackgroundTransparency = 1
+iconFrame.Parent = iconGui
+
+-- Pinalitan ang TextButton ng ImageButton para sa iyong custom logo
+local icon = Instance.new("ImageButton")
+icon.Size = UDim2.new(1,0,1,0)
+icon.BackgroundColor3 = Color3.fromRGB(20,20,20) -- Madilim na background para litaw ang logo
+icon.ZIndex = 20
+icon.ScaleType = Enum.ScaleType.Fit -- Pinapanatili ang tamang porma ng pic para hindi mabanat
+icon.Parent = iconFrame
+
+-- 🔥 ILAGAY ANG SAKTONG ASSET ID NG IN-UPLOAD MONG LARAWAN DITO:
+icon.Image = "rbxassetid://ILAGAY_ANG_ASSET_ID_DITO"
+
+-- Hugis ng Icon (Bagay ang rounded square para sa logo mo)
+local iconCorner = Instance.new("UICorner", icon)
+iconCorner.CornerRadius = UDim.new(0,12)
+
+-- Pulang Outline o Glow para bumagay sa main menu ng script
+local iconStroke = Instance.new("UIStroke")
+iconStroke.Color = Color3.fromRGB(255,60,60)
+iconStroke.Thickness = 2
+iconStroke.Parent = icon
+
+-- DRAG LEFT-RIGHT
+local dragging = false
+local dragStart
+local startX
+
+iconFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startX = iconFrame.Position.X.Offset
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        iconFrame.Position = UDim2.new(0, startX + delta.X, 0, 10)
+    end
+end)
+
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- ================= MAIN GUI ==================
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.Enabled = false
+gui.DisplayOrder = 999999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0,260,0,210)
+frame.Position = UDim2.new(0.5,-130,1,50)
+frame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+frame.BackgroundTransparency = 1
+frame.ZIndex = 10
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0,10)
+frame.Parent = gui
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(255,60,60)
+stroke.Thickness = 2
+stroke.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,0,0,25)
+title.Position = UDim2.new(0,0,0,5)
+title.Text = "MM2 FREEZE TRADE"
+title.TextColor3 = Color3.fromRGB(255,60,60)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.BackgroundTransparency = 1
+title.ZIndex = 11
+title.Parent = frame
+
+local box = Instance.new("TextBox")
+box.Size = UDim2.new(0.85,0,0,25)
+box.Position = UDim2.new(0.075,0,0,35)
+box.PlaceholderText = "Enter Username"
+box.BackgroundColor3 = Color3.fromRGB(30,30,30)
+box.TextColor3 = Color3.fromRGB(255,255,255)
+box.Font = Enum.Font.Gotham
+box.TextSize = 14
+box.ZIndex = 11
+Instance.new("UICorner", box).CornerRadius = UDim.new(0,6)
+box.Parent = frame
+
+local avatar = Instance.new("ImageLabel")
+avatar.Size = UDim2.new(0,60,0,60)
+avatar.Position = UDim2.new(0.5,-30,0,65)
+avatar.BackgroundTransparency = 1
+avatar.ZIndex = 11
+avatar.Parent = frame
+
+local avatarName = Instance.new("TextLabel")
+avatarName.Size = UDim2.new(1,0,0,20)
+avatarName.Position = UDim2.new(0,0,0,130)
+avatarName.Text = ""
+avatarName.TextColor3 = Color3.fromRGB(200,200,200)
+avatarName.Font = Enum.Font.GothamBold
+avatarName.TextSize = 14
+avatarName.BackgroundTransparency = 1
+avatarName.ZIndex = 11
+avatarName.Parent = frame
+
+box.FocusLost:Connect(function()
+    local username = box.Text
+    if username ~= "" then
+        local success, result = pcall(function()
+            return Players:GetUserIdFromNameAsync(username)
+        end)
+        if success then
+            local id = result
+            local thumb = Players:GetUserThumbnailAsync(id, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+            avatar.Image = thumb
+            avatarName.Text = username
+        else
+            avatar.Image = ""
+            avatarName.Text = "User not found"
+        end
+    end
+end)
+
+local buttons = {"FREEZE TRADE","FORCE ACCEPT"}
+local btnY = 155
+
+for _, txt in ipairs(buttons) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.85,0,0,25)
+    btn.Position = UDim2.new(0.075,0,0,btnY)
+    btn.BackgroundColor3 = Color3.fromRGB(255,60,60)
+    btn.Text = txt
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.ZIndex = 11
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    btn.Parent = frame
+    btnY = btnY + 30
+
+    btn.MouseButton1Click:Connect(function()
+        local original = btn.Text
+        btn.Text = "Processing..."
+        task.wait(0.5)
+        btn.Text = original
+    end)
+end
+
+-- ================= ANIMATION ==================
+local isOpen = false
+
+local openTween = TweenService:Create(
+    frame,
+    TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    {
+        Position = UDim2.new(0.5,-130,0.5,-105),
+        BackgroundTransparency = 0
+    }
+)
+
+local closeTween = TweenService:Create(
+    frame,
+    TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+    {
+        Position = UDim2.new(0.5,-130,1,50),
+        BackgroundTransparency = 1
+    }
+)
+
+icon.MouseButton1Click:Connect(function()
+    if not isOpen then
+        gui.Enabled = true
+        openTween:Play()
+        isOpen = true
+    else
+        closeTween:Play()
+        task.wait(0.25)
+        gui.Enabled = false
+        isOpen = false
+    end
+end)
